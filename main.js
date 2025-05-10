@@ -176,8 +176,8 @@ function keyUpHandler(e) {
     }
 }
 
-document.addEventListener("keydown", keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
+window.addEventListener("keydown", keyDownHandler);
+window.addEventListener("keyup", keyUpHandler);
 
 ball.reset(Math.random() > 0.5 ? 1 : -1);
 gameLoop();
