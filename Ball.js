@@ -21,8 +21,12 @@ class Ball {
         this.x += this.speedX;
         this.y += this.speedY;
 
-        // Collision with top and bottom walls
-        if (this.y - this.radius < 0 || this.y + this.radius > this.canvasHeight) {
+        // Corrigir colisão com topo e fundo
+        if (this.y - this.radius < 0) {
+            this.y = this.radius;
+            this.speedY = -this.speedY;
+        } else if (this.y + this.radius > this.canvasHeight) {
+            this.y = this.canvasHeight - this.radius;
             this.speedY = -this.speedY;
         }
     }

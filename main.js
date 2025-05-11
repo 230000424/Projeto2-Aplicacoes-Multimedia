@@ -11,10 +11,13 @@ const paddleSpeed = 6;
 const ballRadius = 8;
 const ballSpeed = 2;
 
-// Temporizador
+// Cronometro
 let timeLimit = 5; // segundos
 let startTime = null;
 let gameOver = false;
+
+// Overtime
+let inOvertime = false;
 
 // Instanciar objetos
 const leftPaddle = new Paddle(10, canvasHeight / 2 - paddleHeight / 2, paddleWidth, paddleHeight, paddleSpeed);
@@ -49,11 +52,16 @@ function drawScore() {
 }
 
 function drawTimer() {
-    const remaining = Math.max(0, timeLimit - ((performance.now() - startTime) / 1000));
     ctx.fillStyle = "#00ffcc";
     ctx.font = "bold 20px Arial";
     ctx.textAlign = "center";
-    ctx.fillText(`Tempo: ${remaining.toFixed(1)}s`, canvasWidth / 2, canvasHeight - 30);
+
+    if (inOvertime) {
+        ctx.fillText(`Prolongamento`, canvasWidth / 2, canvasHeight - 30);
+    } else {
+        const remaining = Math.max(0, timeLimit - ((performance.now() - startTime) / 1000));
+        ctx.fillText(`Tempo: ${remaining.toFixed(1)}s`, canvasWidth / 2, canvasHeight - 30);
+    }
 }
 
 function draw() {
@@ -94,7 +102,10 @@ function draw() {
 function update() {
     if (gameOver) return;
 
-    
+    if (startTime === null) {
+        startTime = performance.now();
+    }
+
     if (upPressedP1 && leftPaddle.y > 0) leftPaddle.moveUp();
     if (downPressedP1 && leftPaddle.y + paddleHeight < canvasHeight) leftPaddle.moveDown(canvasHeight);
     if (upPressedP2 && rightPaddle.y > 0) rightPaddle.moveUp();
@@ -114,20 +125,29 @@ function update() {
     // Pontuação
     if (ball.x - ball.radius < 0) {
         rightScore++;
-        ball.reset(1);
+        if (inOvertime && rightScore !== leftScore) {
+            gameOver = true;
+        } else {
+            ball.reset(1);
+        }
     } else if (ball.x + ball.radius > canvasWidth) {
         leftScore++;
-        ball.reset(-1);
+        if (inOvertime && leftScore !== rightScore) {
+            gameOver = true;
+        } else {
+            ball.reset(-1);
+        }
     }
-
-    if (startTime === null) startTime = performance.now();
 
     const elapsed = (performance.now() - startTime) / 1000;
-    if (elapsed >= timeLimit) {
-        gameOver = true;
-        return;
+    if (elapsed >= timeLimit && !inOvertime) {
+        if (leftScore === rightScore) {
+            inOvertime = true;
+        } else {
+            gameOver = true;
+            return;
+        }
     }
-    if (gameOver) return;
 }
 
 function gameLoop() {
@@ -184,6 +204,7 @@ gameLoop();
 
 canvas.addEventListener("mousedown", function (e) {
     if (gameOver) {
+        inOvertime = false;
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
