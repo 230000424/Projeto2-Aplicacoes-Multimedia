@@ -40,72 +40,7 @@ let downPressedP1 = false;
 let upPressedP2 = false;
 let downPressedP2 = false;
 
-function drawNet() {
-    ctx.fillStyle = "#004d66";
-    const netWidth = 4;
-    const netHeight = 20;
-    const netX = canvasWidth / 2 - netWidth / 2;
-    let netY = 0;
-    while (netY < canvasHeight) {
-        ctx.fillRect(netX, netY, netWidth, netHeight);
-        netY += netHeight * 2;
-    }
-}
-
-function drawScore() {
-    ctx.fillStyle = "#00d8ff";
-    ctx.font = "24px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(`${leftScore} : ${rightScore}`, canvasWidth / 2, 30);
-}
-
-function drawTimer() {
-    ctx.fillStyle = "#00ffcc";
-    ctx.font = "bold 20px Arial";
-    ctx.textAlign = "center";
-
-    if (inOvertime) {
-        ctx.fillText(`Prolongamento`, canvasWidth / 2, canvasHeight - 30);
-    } else {
-        const remaining = Math.max(0, timeLimit - ((performance.now() - startTime) / 1000));
-        ctx.fillText(`Tempo: ${remaining.toFixed(1)}s`, canvasWidth / 2, canvasHeight - 30);
-    }
-}
-
-function drawLobby() {
-    // Limpa o canvas dos botões
-    buttonsCtx.clearRect(0, 0, buttonsCanvas.width, buttonsCanvas.height);
-
-    // Titulo
-    buttonsCtx.fillStyle = "#00d8ff";
-    buttonsCtx.font = "bold 36px Arial";
-    buttonsCtx.textAlign = "center";
-    buttonsCtx.fillText("Bem-vindo ao Gnop!", buttonsCanvas.width / 2, 50);
-
-    // Descrição do modo de jogo
-    buttonsCtx.font = "16px Arial";
-    buttonsCtx.fillStyle = "#ffffff";
-    buttonsCtx.textAlign = "left";
-    buttonsCtx.fillText("Modo 1: Jogo clássico sem obstáculos.", 20, 100);
-    buttonsCtx.fillText("Modo 2: Jogo com obstáculos no campo.", 20, 130);
-
-
-    // Desenha os botão de nível 1
-    buttonsCtx.fillStyle = "#00d8ff";
-    buttonsCtx.fillRect(250, 200, 75, 40); // Botão desenhado
-    buttonsCtx.fillStyle = "#000";
-    buttonsCtx.font = "20px Arial";
-    buttonsCtx.fillText("Clássico", 30, 45);
-
-    // Desenha os botão de nível 2
-    buttonsCtx.fillStyle = "#00d8ff";
-    buttonsCtx.fillRect(450, 200, 75, 40); // Botão desenhado
-    buttonsCtx.fillStyle = "#000";
-    buttonsCtx.font = "20px Arial";
-    buttonsCtx.fillText("Barreiras", 120, 45);
-}
-
-function draw() {
+function init() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     drawNet();
     drawScore();
@@ -135,8 +70,6 @@ function draw() {
             ctx.fillText("Jogador 1!", canvasWidth / 2, canvasHeight / 2 - 5);
         } else if (rightScore > leftScore) {
             ctx.fillText("Jogador 2!", canvasWidth / 2, canvasHeight / 2 - 5);
-        } else {
-            ctx.fillText("Empate!", canvasWidth / 2, canvasHeight / 2 - 5);
         }
 
         // Desenha o botão de reiniciar
@@ -145,6 +78,13 @@ function draw() {
         ctx.fillStyle = "#000";
         ctx.font = "20px Arial";
         ctx.fillText("Reiniciar", 400, 300);
+
+        // Desenha o botão de voltar ao lobby
+        ctx.fillStyle = "#00d8ff";
+        ctx.fillRect(300, 340, 200, 50); // Botão desenhado
+        ctx.fillStyle = "#000";
+        ctx.font = "20px Arial";
+        ctx.fillText("Voltar ao Lobby", 400, 370); 
     }
 }
 
@@ -231,6 +171,71 @@ function update() {
     }
 }
 
+function drawNet() {
+    ctx.fillStyle = "#004d66";
+    const netWidth = 4;
+    const netHeight = 20;
+    const netX = canvasWidth / 2 - netWidth / 2;
+    let netY = 0;
+    while (netY < canvasHeight) {
+        ctx.fillRect(netX, netY, netWidth, netHeight);
+        netY += netHeight * 2;
+    }
+}
+
+function drawScore() {
+    ctx.fillStyle = "#00d8ff";
+    ctx.font = "24px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(`${leftScore} : ${rightScore}`, canvasWidth / 2, 30);
+}
+
+function drawTimer() {
+    ctx.fillStyle = "#00ffcc";
+    ctx.font = "bold 20px Arial";
+    ctx.textAlign = "center";
+
+    if (inOvertime) {
+        ctx.fillText(`Prolongamento`, canvasWidth / 2, canvasHeight - 30);
+    } else {
+        const remaining = Math.max(0, timeLimit - ((performance.now() - startTime) / 1000));
+        ctx.fillText(`Tempo: ${remaining.toFixed(1)}s`, canvasWidth / 2, canvasHeight - 30);
+    }
+}
+
+function drawLobby() {
+    // Limpa o canvas dos botões
+    buttonsCtx.clearRect(0, 0, buttonsCanvas.width, buttonsCanvas.height);
+
+    // Titulo
+    buttonsCtx.fillStyle = "#00d8ff";
+    buttonsCtx.font = "bold 36px Arial";
+    buttonsCtx.textAlign = "center";
+    buttonsCtx.fillText("Bem-vindo ao Gnop!", buttonsCanvas.width / 2, 50);
+
+    // Descrição do modo de jogo
+    buttonsCtx.font = "16px Arial";
+    buttonsCtx.fillStyle = "#ffffff";
+    buttonsCtx.textAlign = "left";
+    buttonsCtx.fillText("Modo 1: Jogo clássico sem obstáculos.", 20, 100);
+    buttonsCtx.fillText("Modo 2: Jogo com obstáculos no campo.", 20, 130);
+
+
+    // Desenha os botão de nível 1
+    buttonsCtx.fillStyle = "#00d8ff";
+    buttonsCtx.fillRect(250, 200, 75, 40); // Botão desenhado
+    buttonsCtx.fillStyle = "#000";
+    buttonsCtx.font = "20px Arial";
+    buttonsCtx.fillText("Clássico", 30, 45);
+
+    // Desenha os botão de nível 2
+    buttonsCtx.fillStyle = "#00d8ff";
+    buttonsCtx.fillRect(450, 200, 75, 40); // Botão desenhado
+    buttonsCtx.fillStyle = "#000";
+    buttonsCtx.font = "20px Arial";
+    buttonsCtx.fillText("Barreiras", 120, 45);
+}
+
 function gameLoop() {
     if (gameState === "lobby") {
         canvas.style.display = "none";
@@ -238,7 +243,7 @@ function gameLoop() {
     } else if(gameState === "playing") {
         canvas.style.display = "block";
         update();
-        draw();
+        init();
     }
     requestAnimationFrame(gameLoop);
 }   
@@ -304,6 +309,16 @@ canvas.addEventListener("mousedown", function (e) {
             gameOver = false;
             ball.reset(Math.random() > 0.5 ? 1 : -1);
         }
+
+         if(x >= 300 && x <= 500 && y >= 340 && y <= 390) {
+            gameState = "lobby";
+            gameOver = false;
+            inOvertime = false;
+            buttonsCanvas.style.display = "block";
+            canvas.style.display = "none";
+
+         }
+
     }
 });
 
@@ -319,7 +334,7 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
     if (mouseX >= 20 && mouseX <= 90 && mouseY >= 20 && mouseY <= 60) {
         buttonsCanvas.style.display = "none";
         currentLevel = 1;
-        timeLimit = 45;
+        timeLimit = 5;
         startTime = performance.now();
         ball.reset(Math.random() > 0.5 ? 1 : -1);
         setupLevel(currentLevel);
@@ -332,7 +347,7 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
     if (mouseX >= 110 && mouseX <= 180 && mouseY >= 20 && mouseY <= 60) {
         buttonsCanvas.style.display = "none";
         currentLevel = 2;
-        timeLimit = 45;
+        timeLimit = 5;
         startTime = performance.now();
         ball.reset(Math.random() > 0.5 ? 1 : -1);
         setupLevel(currentLevel);
