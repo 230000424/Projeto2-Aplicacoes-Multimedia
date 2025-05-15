@@ -217,23 +217,23 @@ function drawLobby() {
     buttonsCtx.font = "16px Arial";
     buttonsCtx.fillStyle = "#ffffff";
     buttonsCtx.textAlign = "left";
-    buttonsCtx.fillText("Modo 1: Jogo clássico sem obstáculos.", 20, 100);
-    buttonsCtx.fillText("Modo 2: Jogo com obstáculos no campo.", 20, 130);
-
+    buttonsCtx.fillText("Modo 1: Jogo clássico sem obstáculos.", 50, 180);
+    buttonsCtx.fillText("Modo 2: Jogo com obstáculos no campo.", 450, 180);
+    buttonsCtx.fillText("Se precionar a tecla 'p' pode ver o pov (point of view) da bola.", 180, 350);
 
     // Desenha os botão de nível 1
     buttonsCtx.fillStyle = "#00d8ff";
-    buttonsCtx.fillRect(250, 200, 75, 40); // Botão desenhado
+    buttonsCtx.fillRect(150, 200, 80, 40); // Botão desenhado
     buttonsCtx.fillStyle = "#000";
     buttonsCtx.font = "20px Arial";
-    buttonsCtx.fillText("Clássico", 30, 45);
+    buttonsCtx.fillText("Clássico", 153, 227);
 
     // Desenha os botão de nível 2
     buttonsCtx.fillStyle = "#00d8ff";
-    buttonsCtx.fillRect(450, 200, 75, 40); // Botão desenhado
+    buttonsCtx.fillRect(550, 200, 85, 40); // Botão desenhado
     buttonsCtx.fillStyle = "#000";
     buttonsCtx.font = "20px Arial";
-    buttonsCtx.fillText("Barreiras", 120, 45);
+    buttonsCtx.fillText("Barreiras", 553, 227);
 }
 
 function gameLoop() {
@@ -331,7 +331,7 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
     const mouseY = e.clientY - rect.top;
 
     // Verificar se clicou no botao 1
-    if (mouseX >= 20 && mouseX <= 90 && mouseY >= 20 && mouseY <= 60) {
+    if (mouseX >= 150 && mouseX <= 230 && mouseY >= 200 && mouseY <= 240) {
         buttonsCanvas.style.display = "none";
         currentLevel = 1;
         timeLimit = 5;
@@ -344,7 +344,7 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
     }
 
     // Verificar se clicou no botao 2
-    if (mouseX >= 110 && mouseX <= 180 && mouseY >= 20 && mouseY <= 60) {
+    if (mouseX >= 550 && mouseX <= 635 && mouseY >= 200 && mouseY <= 240) {
         buttonsCanvas.style.display = "none";
         currentLevel = 2;
         timeLimit = 5;
