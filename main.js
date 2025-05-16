@@ -24,8 +24,35 @@ let inOvertime = false;
 
 // Nivel 
 let gameState = "lobby";
-let currentLevel = 1;
+let currentLevel;
 let obstacles = [];
+let map = [
+    [
+        new Obstacle(200, 100, 10, 150),
+        new Obstacle(400, 300, 10, 150),
+        new Obstacle(600, 150, 10, 150)
+    ],
+    [
+        new Obstacle(160, 120, 10, 150),
+        new Obstacle(600, 200, 10, 150),
+        new Obstacle(350, 250, 10, 150)
+    ],
+    [
+        new Obstacle(100, 80, 10, 150),
+        new Obstacle(700, 220, 10, 150),
+        new Obstacle(400, 50, 10, 100)
+    ],
+    [
+        new Obstacle(150, 100, 10, 150),
+        new Obstacle(650, 250, 10, 150),
+        new Obstacle(300, 400, 10, 80)
+    ],
+    [
+        new Obstacle(250, 50, 10, 100),
+        new Obstacle(550, 350, 10, 100),
+        new Obstacle(400, 100, 10, 80)
+    ]
+];
 
 // Instanciar objetos
 const leftPaddle = new Paddle(10, canvasHeight / 2 - paddleHeight / 2, paddleWidth, paddleHeight, paddleSpeed);
@@ -90,11 +117,13 @@ function init() {
 
 function setupLevel(level) {
     if (level === 2) {
-        obstacles = [
-            new Obstacle(200, 100, 10, 150),
-            new Obstacle(500, 200, 10, 150)
-        ];
-
+        const randomIndex = Math.floor(Math.random() * map.length);
+        console.log("Mapa escolhido:", randomIndex, map[randomIndex]);
+        obstacles = [];
+        for(let i = 0; i < map[randomIndex].length; i++){
+            const obstacle = map[randomIndex][i];
+            obstacles.push(new Obstacle(obstacle.x, obstacle.y, obstacle.width, obstacle.height));
+        }
     } else {
         obstacles = [];
     }
@@ -127,17 +156,20 @@ function update() {
     if (currentLevel === 2) {
         for (let i = 0; i < obstacles.length; i++) {
             const obstacle = obstacles[i];
-            if (obstacle.checkCollision(ball)) {
-                if (ball.x + ball.radius > obstacle.x &&
-                    ball.x - ball.radius < obstacle.x + obstacle.width
-                ) {
-                    ball.speedX *= -1
-                }
+            if (obstacle.checkCollision(ball)){
 
-                if (ball.y + ball.radius > obstacle.y &&
-                    ball.y - ball.radius < obstacle.y + obstacle.height
-                ) {
-                    ball.speedY *= -1
+                const overlapLeft = Math.abs((ball.x + ball.radius) - obstacle.x);
+                const overlapRight = Math.abs((ball.x - ball.radius) - (obstacle.x + obstacle.width));
+                const overlapTop = Math.abs((ball.y + ball.radius) - obstacle.y);
+                const overlapBottom = Math.abs((ball.y - ball.radius) - (obstacle.y + obstacle.height));
+
+                // Encontra o menor overlap para decidir o lado do ricochete
+                const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+                if(minOverlap === overlapLeft || minOverlap === overlapRight){
+                    ball.speedX *= -1;
+                }else{
+                    ball.speedY *= -1;
                 }
             }
         }
@@ -253,17 +285,17 @@ function keyDownHandler(e) {
     switch (e.key) {
         case "w":
         case "W":
-            upPressedP1 = true;
+            downPressedP1 = true;
             break;
         case "s":
         case "S":
-            downPressedP1 = true;
+            upPressedP1 = true;
             break;
         case "ArrowUp":
-            upPressedP2 = true;
+            downPressedP2 = true;
             break;
         case "ArrowDown":
-            downPressedP2 = true;
+            upPressedP2 = true;
             break;
     }
 }
@@ -273,17 +305,17 @@ function keyUpHandler(e) {
     switch (e.key) {
         case "w":
         case "W":
-            upPressedP1 = false;
+            downPressedP1 = false;
             break;
         case "s":
         case "S":
-            downPressedP1 = false;
+            upPressedP1 = false;
             break;
         case "ArrowUp":
-            upPressedP2 = false;
+            downPressedP2 = false;
             break;
         case "ArrowDown":
-            downPressedP2 = false;
+            upPressedP2 = false;
             break;
     }
 }
@@ -306,6 +338,7 @@ canvas.addEventListener("mousedown", function (e) {
             leftScore = 0;
             rightScore = 0;
             startTime = performance.now();
+            setupLevel(currentLevel);
             gameOver = false;
             ball.reset(Math.random() > 0.5 ? 1 : -1);
         }
@@ -334,7 +367,7 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
     if (mouseX >= 150 && mouseX <= 230 && mouseY >= 200 && mouseY <= 240) {
         buttonsCanvas.style.display = "none";
         currentLevel = 1;
-        timeLimit = 5;
+        timeLimit = 45;
         startTime = performance.now();
         ball.reset(Math.random() > 0.5 ? 1 : -1);
         setupLevel(currentLevel);
@@ -347,7 +380,7 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
     if (mouseX >= 550 && mouseX <= 635 && mouseY >= 200 && mouseY <= 240) {
         buttonsCanvas.style.display = "none";
         currentLevel = 2;
-        timeLimit = 5;
+        timeLimit = 1;
         startTime = performance.now();
         ball.reset(Math.random() > 0.5 ? 1 : -1);
         setupLevel(currentLevel);
