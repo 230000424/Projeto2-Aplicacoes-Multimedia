@@ -15,10 +15,10 @@ canvas {
 
 #pongCanvas {
     position: absolute;
-    top: 120px; /* Ajuste conforme necessário */
+    top: 120px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1; /* Coloca o canvas do jogo abaixo */
+    z-index: 1;
 }
 
 #buttonsCanvas{
@@ -28,4 +28,13 @@ canvas {
     transform: translateX(-50%);
     z-index: 2;
     pointer-events: all;
+}
+
+#povCanvas {
+    position: absolute;
+    left: 1400px;
+    top: 200px;
+    z-index: 2;
+    border: 2px solid #00d8ff;
+    background: #000;
 }

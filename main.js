@@ -4,6 +4,9 @@ const ctx = canvas.getContext("2d");
 const buttonsCanvas = document.getElementById("buttonsCanvas");
 const buttonsCtx = buttonsCanvas.getContext("2d");
 
+const povCanvas = document.getElementById("povCanvas");
+const povCtx = povCanvas.getContext("2d");
+
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 
@@ -18,6 +21,9 @@ const ballSpeed = 2;
 let timeLimit = 45; // segundos
 let startTime = null;
 let gameOver = false;
+
+// POV
+let povActive = false;
 
 // Overtime
 let inOvertime = false;
@@ -72,6 +78,7 @@ function init() {
     drawNet();
     drawScore();
     drawTimer();
+    drawPov();
     leftPaddle.draw(ctx);
     rightPaddle.draw(ctx);
     ball.draw(ctx);
@@ -235,6 +242,35 @@ function drawTimer() {
     }
 }
 
+function drawPov() {
+    povCtx.clearRect(0, 0, povCanvas.width, povCanvas.height);
+
+    if (!povActive) return;
+
+    povCtx.save();
+
+    let offsetX = povCanvas.width / 2 - ball.x;
+    let offsetY = povCanvas.height / 2 - ball.y;
+
+    offsetX = Math.min(0, Math.max(offsetX, povCanvas.width - canvasWidth));
+    offsetY = Math.min(0, Math.max(offsetY, povCanvas.height - canvasHeight));
+
+    povCtx.translate(offsetX, offsetY);
+
+    drawNet(povCtx);
+    leftPaddle.draw(povCtx);
+    rightPaddle.draw(povCtx);
+    ball.draw(povCtx);
+
+    if (currentLevel === 2) {
+        for (let i = 0; i < obstacles.length; i++) {
+            obstacles[i].draw(povCtx);
+        }
+    }
+
+    povCtx.restore();
+}
+
 function drawLobby() {
     // Limpa o canvas dos botões
     buttonsCtx.clearRect(0, 0, buttonsCanvas.width, buttonsCanvas.height);
@@ -271,6 +307,7 @@ function drawLobby() {
 function gameLoop() {
     if (gameState === "lobby") {
         canvas.style.display = "none";
+        povCanvas.style.display = "none";
         drawLobby();
     } else if(gameState === "playing") {
         canvas.style.display = "block";
@@ -301,6 +338,12 @@ function keyDownHandler(e) {
 }
 
 function keyUpHandler(e) {
+    if(e.key === "p" && gameState === "playing") {
+        povActive = !povActive;
+        povCanvas.style.display = povActive ? "block" : "none";
+        return;
+    }
+
     if (gameOver) return;
     switch (e.key) {
         case "w":
@@ -380,7 +423,7 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
     if (mouseX >= 550 && mouseX <= 635 && mouseY >= 200 && mouseY <= 240) {
         buttonsCanvas.style.display = "none";
         currentLevel = 2;
-        timeLimit = 1;
+        timeLimit = 45;
         startTime = performance.now();
         ball.reset(Math.random() > 0.5 ? 1 : -1);
         setupLevel(currentLevel);
