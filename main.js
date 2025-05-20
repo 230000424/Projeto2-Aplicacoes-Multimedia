@@ -28,6 +28,12 @@ let povActive = false;
 // Overtime
 let inOvertime = false;
 
+// Sprite Sheet
+const goalSprite = new Image();
+goalSprite.src = "assets/Goal.png";
+let goalEffect = null;
+
+
 // Nivel 
 let gameState = "lobby";
 let currentLevel;
@@ -90,6 +96,11 @@ function init() {
         }
     }
 
+    if (goalEffect && goalEffect.active) {
+        goalEffect.update();
+        goalEffect.draw(ctx);
+    }
+
     if (gameOver) {
         // Desenha a tela de fim de jogo
         ctx.fillStyle = "#00d8ff";
@@ -118,7 +129,7 @@ function init() {
         ctx.fillRect(300, 340, 200, 50); // Botão desenhado
         ctx.fillStyle = "#000";
         ctx.font = "20px Arial";
-        ctx.fillText("Voltar ao Lobby", 400, 370); 
+        ctx.fillText("Voltar ao Lobby", 400, 370);
     }
 }
 
@@ -127,7 +138,7 @@ function setupLevel(level) {
         const randomIndex = Math.floor(Math.random() * map.length);
         console.log("Mapa escolhido:", randomIndex, map[randomIndex]);
         obstacles = [];
-        for(let i = 0; i < map[randomIndex].length; i++){
+        for (let i = 0; i < map[randomIndex].length; i++) {
             const obstacle = map[randomIndex][i];
             obstacles.push(new Obstacle(obstacle.x, obstacle.y, obstacle.width, obstacle.height));
         }
@@ -163,7 +174,7 @@ function update() {
     if (currentLevel === 2) {
         for (let i = 0; i < obstacles.length; i++) {
             const obstacle = obstacles[i];
-            if (obstacle.checkCollision(ball)){
+            if (obstacle.checkCollision(ball)) {
 
                 const overlapLeft = Math.abs((ball.x + ball.radius) - obstacle.x);
                 const overlapRight = Math.abs((ball.x - ball.radius) - (obstacle.x + obstacle.width));
@@ -173,9 +184,9 @@ function update() {
                 // Encontra o menor overlap para decidir o lado do ricochete
                 const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
 
-                if(minOverlap === overlapLeft || minOverlap === overlapRight){
+                if (minOverlap === overlapLeft || minOverlap === overlapRight) {
                     ball.speedX *= -1;
-                }else{
+                } else {
                     ball.speedY *= -1;
                 }
             }
@@ -185,6 +196,7 @@ function update() {
     // Pontuação
     if (ball.x - ball.radius < 0) {
         rightScore++;
+        goalEffect = new Goal("yellow");
         if (inOvertime && rightScore !== leftScore) {
             gameOver = true;
         } else {
@@ -192,6 +204,7 @@ function update() {
         }
     } else if (ball.x + ball.radius > canvasWidth) {
         leftScore++;
+        goalEffect = new Goal("white");
         if (inOvertime && leftScore !== rightScore) {
             gameOver = true;
         } else {
@@ -309,13 +322,13 @@ function gameLoop() {
         canvas.style.display = "none";
         povCanvas.style.display = "none";
         drawLobby();
-    } else if(gameState === "playing") {
+    } else if (gameState === "playing") {
         canvas.style.display = "block";
         update();
         init();
     }
     requestAnimationFrame(gameLoop);
-}   
+}
 
 function keyDownHandler(e) {
     if (gameOver) return;
@@ -338,7 +351,7 @@ function keyDownHandler(e) {
 }
 
 function keyUpHandler(e) {
-    if(e.key === "p" && gameState === "playing") {
+    if (e.key === "p" && gameState === "playing") {
         povActive = !povActive;
         povCanvas.style.display = povActive ? "block" : "none";
         return;
@@ -386,14 +399,14 @@ canvas.addEventListener("mousedown", function (e) {
             ball.reset(Math.random() > 0.5 ? 1 : -1);
         }
 
-         if(x >= 300 && x <= 500 && y >= 340 && y <= 390) {
+        if (x >= 300 && x <= 500 && y >= 340 && y <= 390) {
             gameState = "lobby";
             gameOver = false;
             inOvertime = false;
             buttonsCanvas.style.display = "block";
             canvas.style.display = "none";
 
-         }
+        }
 
     }
 });
