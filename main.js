@@ -33,7 +33,6 @@ const goalSprite = new Image();
 goalSprite.src = "assets/Goal.png";
 let goalEffect = null;
 
-
 // Nivel 
 let gameState = "lobby";
 let currentLevel;

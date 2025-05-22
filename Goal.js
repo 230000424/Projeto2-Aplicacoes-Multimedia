@@ -30,10 +30,18 @@ class Goal{
         ctx.globalAlpha = alpha;
 
         // Recorte do "GOAL" amarelo
-        const sx = 0;
-        const sy = 0;
-        const sWidth = 200;
-        const sHeight = 100;
+        let sx = 0;
+        let sy = 0;
+        const sWidth = 310;
+        const sHeight = 155;
+
+        if(this.type === "yellow"){
+            sx = 0;
+            sy = 3;
+        }else if(this.type === "white"){
+            sx = 0;
+            sy = 158;
+        }
 
         const dx = canvas.width / 2 - sWidth / 2;
         const dy = canvas.height / 2 - sHeight / 2;
