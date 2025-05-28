@@ -160,20 +160,28 @@ function update() {
 
     ball.update();
 
+    // Som quando bate nos limetes laterais do campo
+    if(ball.y - ball.radius <= 0 || ball.y + ball.radius >= canvasHeight){
+        playHitSound();
+    }
+
     // Colisão com paddles
     if (ball.checkCollision(leftPaddle)) {
         ball.x = leftPaddle.x + leftPaddle.width + ball.radius;
         ball.reflect(leftPaddle);
+        playHitSound();
     } else if (ball.checkCollision(rightPaddle)) {
         ball.x = rightPaddle.x - ball.radius;
         ball.reflect(rightPaddle);
+        playHitSound();
     }
 
     // Colisão com obstáculos so no nivel 2
     if (currentLevel === 2) {
         for (let i = 0; i < obstacles.length; i++) {
             const obstacle = obstacles[i];
-            if (obstacle.checkCollision(ball)) {
+            if (obstacle.checkCollision(ball)) {~
+                playHitSound();
 
                 const overlapLeft = Math.abs((ball.x + ball.radius) - obstacle.x);
                 const overlapRight = Math.abs((ball.x - ball.radius) - (obstacle.x + obstacle.width));
@@ -195,7 +203,8 @@ function update() {
     // Pontuação
     if (ball.x - ball.radius < 0) {
         rightScore++;
-        goalEffect = new Goal("yellow");
+        goalEffect = new Goal(GoalState.yellow);
+        playGoalSound();
         if (inOvertime && rightScore !== leftScore) {
             gameOver = true;
         } else {
@@ -203,7 +212,8 @@ function update() {
         }
     } else if (ball.x + ball.radius > canvasWidth) {
         leftScore++;
-        goalEffect = new Goal("white");
+        goalEffect = new Goal(GoalState.white);
+        playGoalSound();
         if (inOvertime && leftScore !== rightScore) {
             gameOver = true;
         } else {
@@ -314,6 +324,28 @@ function drawLobby() {
     buttonsCtx.fillStyle = "#000";
     buttonsCtx.font = "20px Arial";
     buttonsCtx.fillText("Barreiras", 553, 227);
+}
+
+function playAmbientMusic(){
+    const gameMusic = document.getElementById("gameMusic");
+    gameMusic.volume = 0.1;
+    if(gameMusic.paused){
+        gameMusic.play();
+    }
+}
+
+function playGoalSound(){
+    const goalSound = document.getElementById("goalSound");
+    goalSound.volume = 0.2;
+    goalSound.currentTime = 0; // Reinicia o som
+    goalSound.play();
+}
+
+function playHitSound(){
+    const hitSound = document.getElementById("hitSound");
+    hitSound.volume = 0.2;
+    hitSound.currentTime = 0; // Reinicia o som
+    hitSound.play();
 }
 
 function gameLoop() {
@@ -429,6 +461,7 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
         gameState = "playing";
         leftScore = 0;
         rightScore = 0;
+        playAmbientMusic();
     }
 
     // Verificar se clicou no botao 2
@@ -442,5 +475,6 @@ buttonsCanvas.addEventListener("mousedown", function (e) {
         gameState = "playing";
         leftScore = 0;
         rightScore = 0;
+        playAmbientMusic();
     }
 });

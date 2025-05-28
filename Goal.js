@@ -1,6 +1,12 @@
+const GoalState = {
+    yellow: 0,
+    white: 1
+}
+
 class Goal{
-    constructor(type, duration = 120){
-        this.type = type;
+
+    constructor(state, duration = 120){
+        this.state = state;
         this.duration = duration;
         this.frame = 0;
         this.active = true;
@@ -35,10 +41,10 @@ class Goal{
         const sWidth = 310;
         const sHeight = 155;
 
-        if(this.type === "yellow"){
+        if(this.state === GoalState.yellow){
             sx = 0;
             sy = 3;
-        }else if(this.type === "white"){
+        }else if(this.state === GoalState.white){
             sx = 0;
             sy = 158;
         }
