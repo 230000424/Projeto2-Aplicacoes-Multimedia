@@ -309,7 +309,7 @@ function drawLobby() {
     buttonsCtx.textAlign = "left";
     buttonsCtx.fillText("Modo 1: Jogo clássico sem obstáculos.", 50, 180);
     buttonsCtx.fillText("Modo 2: Jogo com obstáculos no campo.", 450, 180);
-    buttonsCtx.fillText("Se precionar a tecla 'p' pode ver o pov (point of view) da bola.", 180, 350);
+    buttonsCtx.fillText("Se pressionar a tecla 'p' pode ver o pov (point of view) da bola.", 180, 350);
 
     // Desenha os botão de nível 1
     buttonsCtx.fillStyle = "#00d8ff";
